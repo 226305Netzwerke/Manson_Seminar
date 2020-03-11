@@ -1,0 +1,186 @@
+---
+title: "Charles Manson Stand 11.03."
+author: "E. McGowan, R. Trslic, F. Fuhrmann, A. Veyhl, A. Stete, T. Nolte"
+output:
+  pdf_document: default
+  html_notebook: default
+  html_document:
+    df_print: paged
+editor_options:
+  chunk_output_type: console
+---
+```{r Installieren der Packages}
+install.packages("rmarkdown", dependencies=TRUE)
+install.packages("knitr", dependencies=TRUE)
+install.packages("igraph", dependencies=TRUE)
+install.packages("igraphdata", dependencies=TRUE)
+
+#install.packages("shiny", dependencies=TRUE)
+#install.packages("shinythemes", dependencies=TRUE)
+
+install.packages("dplyr", dependencies=TRUE)
+install.packages("readr", dependencies=TRUE)
+install.packages("intergraph", dependencies=TRUE)
+
+install.packages("visNetwork", dependencies=TRUE)
+
+install.packages("tidygraph", dependencies=TRUE)
+install.packages("ggplot2", dependencies=TRUE)
+install.packages("ggraph", dependencies=TRUE)
+install.packages("stringr", dependencies=TRUE)
+
+```
+
+```{r Initialisierung der Packages}
+library(rmarkdown)
+library(knitr) #Zum exportieren
+library(igraph) #Zur Darstellung von Netzwerken
+library(igraphdata) #Um Daten auslesen zu können
+
+#library(shiny)  Eventuell noch Notwendig 
+#library(shinythemes)  Eventuell noch Notwendig 
+
+library(dplyr) #Zum prüfen von Daten, um eventuelle Fehler zu identifizieren
+library(readr)
+library(intergraph)
+
+library(visNetwork) #Alternative zu igraph aus der Vorlesung
+
+library(tidygraph) #Alternative zu igraph mit besserem Potential 
+library(ggplot2) #notwendig um mit tidygraph zu arbeiten
+library(ggraph) #notwendig um mit tidygraph zu arbeiten
+library(stringr) #notwendig um mit tidygraph zu arbeiten
+```
+
+
+**Quellen für das Projekt:**  
+Bücher:
+
+Helter Skelter: Der Mordrausch des Charles Manson
+https://wlb.ibs-bw.de/aDISWeb/app;jsessionid=F23DF95CE3E1EF228E688B531F978624
+Ed Sanders: The Family – die Geschichte des Charles Manson 
+https://wlb.ibs-bw.de/aDISWeb/app;jsessionid=F23DF95CE3E1EF228E688B531F978624
+Carol Green: Der Fall Charles Manson 
+https://wlb.ibs-bw.de/aDISWeb/app;jsessionid=F23DF95CE3E1EF228E688B531F978624
+Charles Watson: Bekenntnisse eines Mörders: Charles Manson... Sharon Tate...; Hintergründe eines Massakers
+https://wlb.ibs-bw.de/aDISWeb/app;jsessionid=F23DF95CE3E1EF228E688B531F978624
+Christiane von Beller : Berühmte Verbrecher (Stadtbibliothek Stuttgart)
+https://link.springer.com/chapter/10.1007/978-3-662-58742-3_31
+
+Online-Quellen:
+https://www.biography.com/crime-figure/charles-manson
+https://allthatsinteresting.com/charles-manson-facts
+https://www.merkur.de/welt/charles-manson-ist-tot-moerder-sektenfuehrer-und-perverse-pop-ikone-zr-9378627.html
+https://www.tagesspiegel.de/gesellschaft/medien/charles-manson-doku-das-personifizierte-boese/24958466.html
+https://www.welt.de/kultur/literarischewelt/article10573701/Charles-Manson-und-Roman-Polanski-treffen-sich.html
+https://www.sueddeutsche.de/thema/Charles_Manson
+
+
+Film-Dokumentationen
+https://www.youtube.com/watch?v=iAu1Mc0KqJk
+https://www.youtube.com/watch?v=UMaZ3QKz8EQ
+https://www.youtube.com/watch?v=v4qZB2ytq10
+
+
+## Optionen für die Arbeitsumgebung
+Leider bringt ein großes Netzwerk die R-Studio Umgebung sehr schnell an Grenzen. Standardmäßig limitiert R-Studio die Ausgabe von Variablen auf etwa 400. Durch die Größe unseres Datensatzes benötigen wir mehr Platz. 
+
+```{r Sonderoptionen da großes Netzwerk}
+options(max.print=999999)
+```
+
+
+```{r Einlesung der Daten}
+el <- read.csv("https://raw.githubusercontent.com/226305Netzwerke/Manson_Seminar/master/Edgelist.csv", header=T, as.is=T, sep = ",")
+nl <- read.csv("https://raw.githubusercontent.com/226305Netzwerke/Manson_Seminar/master/Nodelist.csv", header=T, as.is=T, sep = ",")
+edgematrix <- as.matrix(el)
+manson <- graph_from_data_frame(d=edgematrix, vertices = nl, directed=T)
+manson
+```
+
+```{r Plotten der Rohdaten}
+plot(manson)
+```
+
+
+#Um mögliche Layoutformate zu identifizieren. 
+
+```{r Testplots}
+plot(manson,
+     edge.arrow.size=0.1,
+     edge.curved=0.2,
+     edge.color="black",
+     layout=layout_with_kk,
+     main="Manson",)
+plot(manson,
+     edge.arrow.size=0.1,
+     edge.curved=0.2,
+     edge.color="black",
+     layout=layout.auto,
+     main="Manson",)
+plot(manson,
+     edge.arrow.size=0.1,
+     edge.curved=0.2,
+     edge.color="black",
+     layout=layout_nicely,
+     main="Manson",)
+plot(manson,
+     edge.arrow.size=0.1,
+     edge.curved=0.2,
+     edge.color="black",
+     layout=layout.drl,
+     main="Manson",)
+```
+
+
+```{r Entzerrter Plot}
+coords <- layout.auto(s)*1.5
+par(mfrow=c(1,1), mar=c(0,0,3,0))
+plot(s, 
+     layout=coords,
+     
+     rescale=FALSE,
+     ylim=c(-4.6,7.5),
+     xlim=c(-2.5,1.5), 
+     asp= 0.5,
+     edge.width = 0.7,
+     edge.curved=TRUE, 
+     vertex.size=12, 
+     vertex.label.font=2,
+     vertex.label.dist=5,
+     vertex.label.degree = pi/2, 
+     vertex.label.cex=.5,
+     vertex.label.family = "Arial",
+     edge.arrow.size=0.2,
+     main="Manson",
+     sub="Pre-Test")
+```
+
+
+```{r}
+visIgraph(manson, type = "full")
+```
+
+
+##Einleitung
+Datenerhebung
+  wie kommen wir ran 
+  Schema 
+  redundates arbeiten 
+  Quellenangabe nach APA für die jeweiligen Personen 
+Auswertung und Interpretation der Daten 
+  Edge & Nodelist erläutern, welche Attribute waren wichtig, warum haben wir des genommen 
+  Danach direkt auf die Visualisierungen eingehen
+    Beschreiben & Interpretieren
+  (Hauptteil)
+  Aussagen belegen, mit den erhobenen Daten 
+  Teamreflektion 
+  MVP Benennen 
+Literaturverzeichnis 
+
+Zu allen Netzwerken die visualisiert werden, muss etwas im Forschungsbericht stehen
+
+Workload auf ects durchrechnen 
+Auswerten, was wer gemacht hat und wie lange 
+
+

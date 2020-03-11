@@ -1,4 +1,4 @@
-from,to,relationship,weight,year_beginning,year_end,
+from,to,relationship,weight,year_beginning,year_end,details,
 abfo,jase,2,3,1968,1969,
 abfo,ropo,2,3,1968,1969,
 abfo,shta,2,3,1968,1969,

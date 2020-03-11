@@ -1,4 +1,4 @@
-id,name,type,sex,date_of_birth,date_of_death,type_of_death,power,relation_to_murder,
+id,name,type,sex,date_of_birth,date_of_death,type_of_death,power,relation_to_murder,details,
 AB,Aryan Brotherhood,2,99,99,99,99,99,99,
 abfo,Abigail Folger,1,2,11-08-1943,08-08-1969,3,1,1,
 adal,Adolph Alexander,1,1,,,,4,1,
